@@ -2,7 +2,7 @@
 
 ebay-dl.py scrapes ebay pages when given a search term and provides a list of the items on the page.\
 Each entry in the list contains the name, price, status, shipping price, whether they provide free returns, and the number of units sold of the item.\
-After scraping, the program creates a json file "SEARCH_TERM.json" that contains this list.\
+After scraping, the program creates a file that contains this list.\
 \
 \
 The command should look as such:
@@ -12,7 +12,8 @@ The command should look as such:
 Page1 is the starting page and page2 is the ending page.\
 Page1 is set to 1 at default and page2 is set to 5 at default.\
 csv lets you choose whether you want to save the data as a .csv file or a .json file.\
-simply having the csv argument will set it so that the data is saved as a .csv file.\
+Simply having the csv argument will set it so that the data is saved as a .csv file.\
+Otherwise, the data will be saved as a .json file.\
 \
 The three .json files in this repository were generated with the following commands:
 ```
