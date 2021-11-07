@@ -4,11 +4,13 @@ import bs4
 from os.path import exists
 import json
 import copy
+import csv
 
 parser = argparse.ArgumentParser(description='Ebay scrapper')
 parser.add_argument('search_term',help='the search term')
 parser.add_argument('--page1',default = 1, help='starting page')
 parser.add_argument('--page2',default = 5, help='ending page')
+parser.add_argument('--csv',action='store_true',help='Whether or not to create in csv format')
 args = parser.parse_args()
 
 base = {'name':'','price':0,'status':'','shipping':0,'free_returns':False,'items_sold':0}
@@ -78,5 +80,14 @@ for i in range(int(args.page1)-1,int(args.page2)):
                 base1= copy.deepcopy(base)
                 all_items.append(base1)
         
-with open(args.search_term.upper()+'.json','w',encoding='utf-8') as f:
-    json.dump(all_items,f)
+if not args.csv:
+    with open(args.search_term.upper()+'.json','w',encoding='utf-8') as f:
+        json.dump(all_items,f)
+else:
+    # csv header
+    fieldnames = ['name','price','status','shipping','free_returns','items_sold' ]
+
+    with open(args.search_term.upper()+'.csv', 'w', encoding='UTF8', newline='') as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(all_items)
