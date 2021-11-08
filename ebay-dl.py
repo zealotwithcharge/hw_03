@@ -18,7 +18,7 @@ all_items=[]
 
 
 for i in range(int(args.page1)-1,int(args.page2)):
-    print(i)
+    print('file number= '+str(i))
     
     if not exists(args.search_term+f'_{i}.html'):
         r = requests.get('https://www.ebay.com/sch/i.html?_from=R40&_sacat=0&_nkw='+args.search_term+f'&_pgn={i}')
@@ -31,7 +31,7 @@ for i in range(int(args.page1)-1,int(args.page2)):
         noStarchSoup = bs4.BeautifulSoup(file.read(), 'html.parser')
         items = noStarchSoup.select('li[class*= "s-item s-item__pl-on-bottom"]')
         
-        print(len(items))
+        print('num of items= '+str(len(items)))
         for i,item in enumerate(items):
             name = item.select('h3[class*= "s-item__title"]')
             
@@ -40,11 +40,15 @@ for i in range(int(args.page1)-1,int(args.page2)):
                 base['name']= name[0].getText()
                 #price
                 price = item.select('span[class = "s-item__price"]')[0].getText()
+                if price.find('to') !=-1:
+                    price = price[:price.find('to')]
+                    
+                
                 price = ''.join(filter(str.isdigit,price))
                 if price != '':
                     base['price'] = int(price)
                 else:
-                    base['price'] = 0
+                    base['price'] = None
                 #status
                 status = item.select('span[class = "SECONDARY_INFO"]')
                 if len(status)!=0:
@@ -87,7 +91,7 @@ else:
     # csv header
     fieldnames = ['name','price','status','shipping','free_returns','items_sold' ]
 
-    with open(args.search_term.upper()+'.csv', 'w', encoding='UTF8', newline='') as f:
+    with open(args.search_term.upper()+'.csv', 'w', encoding='utf-8', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(all_items)
